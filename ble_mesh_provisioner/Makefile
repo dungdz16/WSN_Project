@@ -3,8 +3,10 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := ble_mesh_provisioner
+PROJECT_NAME := fast_prov_client
 
-EXTRA_COMPONENT_DIRS := $(IDF_PATH)/examples/bluetooth/esp_ble_mesh/common_components/example_init
+EXTRA_COMPONENT_DIRS := $(IDF_PATH)/examples/bluetooth/esp_ble_mesh/common_components/example_init \
+                        $(IDF_PATH)/examples/bluetooth/esp_ble_mesh/common_components/fast_provisioning \
+                        $(IDF_PATH)/examples/bluetooth/esp_ble_mesh/common_components/button
 
 include $(IDF_PATH)/make/project.mk

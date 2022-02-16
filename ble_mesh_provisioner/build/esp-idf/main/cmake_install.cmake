@@ -1,8 +1,8 @@
-# Install script for directory: E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/main
+# Install script for directory: E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/ble_mesh_provisioner")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/fast_prov_client")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

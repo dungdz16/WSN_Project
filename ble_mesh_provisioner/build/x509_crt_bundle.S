@@ -1,4 +1,4 @@
-/* * Data converted from E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

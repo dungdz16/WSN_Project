@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "esp_ble_mesh_defs.h": "c",
+    "ble_mesh_example_init.h": "c",
+    "esp_log.h": "c",
+    "fast_prov.h": "c",
+    "ble_mesh_fast_prov_operation.h": "c",
+    "ble_mesh_fast_prov_common.h": "c",
+    "esp_ble_mesh_local_data_operation_api.h": "c",
+    "esp_err.h": "c"
+  }
+}

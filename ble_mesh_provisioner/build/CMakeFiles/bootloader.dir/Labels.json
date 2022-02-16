@@ -2,34 +2,34 @@
 	"sources" : 
 	[
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/CMakeFiles/bootloader"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/CMakeFiles/bootloader"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/CMakeFiles/bootloader.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/CMakeFiles/bootloader.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/CMakeFiles/bootloader-complete.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/CMakeFiles/bootloader-complete.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
 		},
 		{
-			"file" : "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
+			"file" : "E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
 		}
 	],
 	"target" : 

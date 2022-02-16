@@ -6091,7 +6091,10 @@
                                 "help": "This option determines for how long the local node advertises using\nNode Identity. The given value is in seconds. The specification limits\nthis to 60 seconds and lists it as the recommended value as well.\nSo leaving the default value is the safest option.\nWhen an unprovisioned device is provisioned successfully and becomes a\nnode, it will start to advertise using Node Identity during the time\nset by this option. And after that, Network ID will be advertised.",
                                 "id": "BLE_MESH_NODE_ID_TIMEOUT",
                                 "name": "BLE_MESH_NODE_ID_TIMEOUT",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    60
+                                ],
                                 "title": "Node Identity advertising timeout",
                                 "type": "int"
                             },
@@ -6101,7 +6104,10 @@
                                 "help": "This option specifies how many Proxy Filter entries the local node supports.\nThe entries of Proxy filter (whitelist or blacklist) are used to store a\nlist of addresses which can be used to decide which messages will be forwarded\nto the Proxy Client by the Proxy Server.",
                                 "id": "BLE_MESH_PROXY_FILTER_SIZE",
                                 "name": "BLE_MESH_PROXY_FILTER_SIZE",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    32767
+                                ],
                                 "title": "Maximum number of filter entries per Proxy Client",
                                 "type": "int"
                             }
@@ -6352,7 +6358,7 @@
                         "name": "BLE_MESH_TX_SEG_MSG_COUNT",
                         "range": [
                             1,
-                            60
+                            100
                         ],
                         "title": "Maximum number of simultaneous outgoing segmented messages",
                         "type": "int"
@@ -15730,6 +15736,57 @@
                 "depends_on": null,
                 "id": "component-config-supplicant",
                 "title": "Supplicant",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice BUTTON_TIMER_IMPLEMENT>",
+                                "help": null,
+                                "id": "BUTTON_USE_RTOS_TIMER",
+                                "name": "BUTTON_USE_RTOS_TIMER",
+                                "range": null,
+                                "title": "Use FreeRTOS Timer",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice BUTTON_TIMER_IMPLEMENT>",
+                                "help": null,
+                                "id": "BUTTON_USE_ESP_TIMER",
+                                "name": "BUTTON_USE_ESP_TIMER",
+                                "range": null,
+                                "title": "Use ESP Timer",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Choose a implementation of timer for button instance.",
+                        "id": "component-config-button-button-timer-mode",
+                        "name": "BUTTON_TIMER_IMPLEMENT",
+                        "title": "Button Timer Mode",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "BUTTON_IO_GLITCH_FILTER_TIME_MS",
+                        "name": "BUTTON_IO_GLITCH_FILTER_TIME_MS",
+                        "range": [
+                            10,
+                            100
+                        ],
+                        "title": "IO glitch filter timer ms (10~100)",
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-button",
+                "title": "Button",
                 "type": "menu"
             }
         ],

@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_provisioner/build/bootloader/esp-idf/soc/soc/esp32/cmake_install.cmake")
+  include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/bootloader/esp-idf/soc/soc/esp32/cmake_install.cmake")
 
 endif()
 
