@@ -8,15 +8,15 @@ static void handle_gen_power_level_msg(esp_ble_mesh_model_t *model,
   uint8_t status[2];
   switch(ctx->recv_op)
   {
-    case ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_GET:
+    case ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_SET_UNACK:
     // status[0] = state->power_actual >> 8;
     // status[1] = state->power_actual && 0xFF;
     status[0] = 10;
     status[1] = 11;
-      esp_ble_mesh_server_model_send_msg(model, ctx, 
-                                        ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_STATUS,
-                                        sizeof(status), status);
-      break;
+    esp_ble_mesh_server_model_send_msg(model, ctx, 
+                                      ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_STATUS,
+                                      sizeof(status), status);
+    break;
   }
 }
 
@@ -44,6 +44,13 @@ void ble_mesh_generic_server_cb(esp_ble_mesh_generic_server_cb_event_t event,
         handle_gen_power_level_msg(param->model, &param->ctx, srv->state);
       }
     case ESP_BLE_MESH_GENERIC_SERVER_RECV_SET_MSG_EVT:
+      ESP_LOGI(TAG, "ESP_BLE_MESH_GENERIC_SERVER_RECV_SET_MSG_EVT");
+      if (param->ctx.recv_op == ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_SET_UNACK)
+      {
+        srv = param->model->user_data;
+        ESP_LOGI(TAG, "Power Level: %04x", srv->state->power_actual);
+        handle_gen_power_level_msg(param->model, &param->ctx, srv->state);
+      }
       break;
     case ESP_BLE_MESH_GENERIC_SERVER_EVT_MAX:
       break;

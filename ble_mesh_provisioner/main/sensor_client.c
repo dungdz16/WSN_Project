@@ -7,7 +7,7 @@
  */
 
 #include "sensor_client.h"
-
+#include "prov.h"
 #define TAG "SENSOR_CLIENT"
 
 #define CID_ESP             0x02E5
@@ -25,7 +25,6 @@
 static uint16_t server_address = ESP_BLE_MESH_ADDR_UNASSIGNED;
 static uint16_t sensor_prop_id;
 
-extern struct example_info_store store;
 static void example_ble_mesh_set_msg_common(esp_ble_mesh_client_common_param_t *common,
                                             esp_ble_mesh_node_t *node,
                                             esp_ble_mesh_model_t *model, uint32_t opcode, uint16_t app_idx)
@@ -85,6 +84,7 @@ void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node,
                                           esp_ble_mesh_client_t sensor_client, uint32_t opcode, uint16_t app_idx)
 {
     esp_ble_mesh_sensor_client_get_state_t get = {0};
+    //esp_ble_mesh_sensor_client_set_state_t set = {0};
     esp_ble_mesh_client_common_param_t common = {0};
     esp_err_t err = ESP_OK;
 
@@ -104,6 +104,8 @@ void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node,
     case ESP_BLE_MESH_MODEL_OP_SENSOR_SERIES_GET:
         get.series_get.property_id = sensor_prop_id;
         break;
+    //case ESP_BLE_MESH_MODEL_OP_SENSOR_SETTING_SET_UNACK:
+        
     default:
         break;
     }
@@ -280,8 +282,34 @@ void example_ble_mesh_sensor_client_cb(esp_ble_mesh_sensor_client_cb_event_t eve
         }
         break;
     case ESP_BLE_MESH_SENSOR_CLIENT_PUBLISH_EVT:
+        ESP_LOGI(TAG, "ESP_BLE_MESH_SENSOR_CLIENT_PUBLISH_EVT");
+        ESP_LOGI(TAG, "Sensor Status, opcode 0x%04x", param->params->ctx.recv_op);
+            if (param->status_cb.sensor_status.marshalled_sensor_data->len) {
+                ESP_LOG_BUFFER_HEX("Sensor Data", param->status_cb.sensor_status.marshalled_sensor_data->data,
+                    param->status_cb.sensor_status.marshalled_sensor_data->len);
+                uint8_t *data = param->status_cb.sensor_status.marshalled_sensor_data->data;
+                uint16_t length = 0;
+                for (; length < param->status_cb.sensor_status.marshalled_sensor_data->len; ) {
+                    uint8_t fmt = ESP_BLE_MESH_GET_SENSOR_DATA_FORMAT(data);
+                    uint8_t data_len = ESP_BLE_MESH_GET_SENSOR_DATA_LENGTH(data, fmt);
+                    uint16_t prop_id = ESP_BLE_MESH_GET_SENSOR_DATA_PROPERTY_ID(data, fmt);
+                    uint8_t mpid_len = (fmt == ESP_BLE_MESH_SENSOR_DATA_FORMAT_A ?
+                                        ESP_BLE_MESH_SENSOR_DATA_FORMAT_A_MPID_LEN : ESP_BLE_MESH_SENSOR_DATA_FORMAT_B_MPID_LEN);
+                    ESP_LOGI(TAG, "Format %s, length 0x%02x, Sensor Property ID 0x%04x",
+                        fmt == ESP_BLE_MESH_SENSOR_DATA_FORMAT_A ? "A" : "B", data_len, prop_id);
+                    if (data_len != ESP_BLE_MESH_SENSOR_DATA_ZERO_LEN) {
+                        ESP_LOG_BUFFER_HEX("Sensor Data", data + mpid_len, data_len + 1);
+                        length += mpid_len + data_len + 1;
+                        data += mpid_len + data_len + 1;
+                    } else {
+                        length += mpid_len;
+                        data += mpid_len;
+                    }
+                }
+            }
         break;
     case ESP_BLE_MESH_SENSOR_CLIENT_TIMEOUT_EVT:
+        ESP_LOGI(TAG, "ESP_BLE_MESH_SENSOR_CLIENT_TIMEOUT_EVT");
         //example_ble_mesh_sensor_timeout(param->params->opcode);
     default:
         break;

@@ -1,7 +1,7 @@
 #include "prov.h"
 //#include "sensor_server.h"
 
-extern uint8_t dev_uuid[16] = { 0xdd, 0xdd };;
+extern uint8_t dev_uuid[16];
 
 void app_main(void)
 {
