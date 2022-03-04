@@ -1,7 +1,7 @@
-#include "fast_prov.h"
+#include "prov.h"
 //#include "sensor_server.h"
 
-extern uint8_t dev_uuid[ESP_BLE_MESH_OCTET16_LEN];
+extern uint8_t dev_uuid[16] = { 0xdd, 0xdd };;
 
 void app_main(void)
 {

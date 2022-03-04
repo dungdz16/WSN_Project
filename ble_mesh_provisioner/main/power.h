@@ -11,8 +11,7 @@
 #include "esp_ble_mesh_networking_api.h"
 #include "esp_ble_mesh_config_model_api.h"
 #include "esp_ble_mesh_generic_model_api.h"
-
-static esp_ble_mesh_client_t power_level_client;
+#include "prov.h"
 void example_ble_mesh_generic_client_cb(esp_ble_mesh_generic_client_cb_event_t event,
                                         esp_ble_mesh_generic_client_cb_param_t *param);
 #endif

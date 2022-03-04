@@ -108,9 +108,10 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/unity/cmake_install.cmake")
   include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/wifi_provisioning/cmake_install.cmake")
   include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/main/cmake_install.cmake")
+  include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/iperf/cmake_install.cmake")
   include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/example_init/cmake_install.cmake")
-  include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/fast_provisioning/cmake_install.cmake")
   include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/button/cmake_install.cmake")
+  include("E:/Downloads/20211/WSN/WSN_Project/ble_mesh_provisioner/build/esp-idf/protocol_examples_common/cmake_install.cmake")
 
 endif()
 

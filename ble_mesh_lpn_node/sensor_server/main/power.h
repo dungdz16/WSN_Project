@@ -26,17 +26,17 @@ static esp_ble_mesh_gen_power_level_state_t power_state[1] =
   
 };
 
-ESP_BLE_MESH_MODEL_PUB_DEFINE(power_pub, 20, ROLE_FAST_PROV);
+ESP_BLE_MESH_MODEL_PUB_DEFINE(power_pub, 20, ROLE_NODE);
 static esp_ble_mesh_gen_power_level_srv_t power_server = {
-  .rsp_ctrl.set_auto_rsp = ESP_BLE_MESH_SERVER_AUTO_RSP,
-  .rsp_ctrl.get_auto_rsp = ESP_BLE_MESH_SERVER_AUTO_RSP,
+  .rsp_ctrl.set_auto_rsp = ESP_BLE_MESH_SERVER_RSP_BY_APP,
+  .rsp_ctrl.get_auto_rsp = ESP_BLE_MESH_SERVER_RSP_BY_APP,
   .state = power_state,
 };
 
-ESP_BLE_MESH_MODEL_PUB_DEFINE(power_setup_pub, 20, ROLE_FAST_PROV);
+ESP_BLE_MESH_MODEL_PUB_DEFINE(power_setup_pub, 20, ROLE_NODE);
 static esp_ble_mesh_gen_power_level_setup_srv_t power_setup_server = {
-  .rsp_ctrl.set_auto_rsp = ESP_BLE_MESH_SERVER_AUTO_RSP,
-  .rsp_ctrl.get_auto_rsp = ESP_BLE_MESH_SERVER_AUTO_RSP,
+  .rsp_ctrl.set_auto_rsp = ESP_BLE_MESH_SERVER_RSP_BY_APP,
+  .rsp_ctrl.get_auto_rsp = ESP_BLE_MESH_SERVER_RSP_BY_APP,
   .state = power_state,
 };
 

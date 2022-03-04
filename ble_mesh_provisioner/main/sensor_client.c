@@ -28,12 +28,11 @@ static uint16_t sensor_prop_id;
 extern struct example_info_store store;
 static void example_ble_mesh_set_msg_common(esp_ble_mesh_client_common_param_t *common,
                                             esp_ble_mesh_node_t *node,
-                                            esp_ble_mesh_model_t *model, uint32_t opcode, 
-                                            uint16_t net_idx, uint16_t app_idx)
+                                            esp_ble_mesh_model_t *model, uint32_t opcode, uint16_t app_idx)
 {
     common->opcode = opcode;
     common->model = model;
-    common->ctx.net_idx = net_idx;
+    common->ctx.net_idx = node->net_idx;
     common->ctx.app_idx = app_idx;
     common->ctx.addr = node->unicast_addr;
     common->ctx.send_ttl = MSG_SEND_TTL;
@@ -83,8 +82,7 @@ static void example_ble_mesh_parse_node_comp_data(const uint8_t *data, uint16_t 
 
 
 void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node, 
-                                          esp_ble_mesh_client_t sensor_client, uint32_t opcode,
-                                          uint16_t net_idx, uint16_t app_idx)
+                                          esp_ble_mesh_client_t sensor_client, uint32_t opcode, uint16_t app_idx)
 {
     esp_ble_mesh_sensor_client_get_state_t get = {0};
     esp_ble_mesh_client_common_param_t common = {0};
@@ -92,11 +90,10 @@ void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node,
 
     //node = esp_ble_mesh_provisioner_get_node_with_addr(server_address);
     if (node == NULL) {
-        ESP_LOGE(TAG, "Node 0x%04x not exists", server_address);
+        ESP_LOGE(TAG, "Node is not exists");
         return;
     }
-
-    example_ble_mesh_set_msg_common(&common, node, sensor_client.model, opcode, net_idx, app_idx);
+    example_ble_mesh_set_msg_common(&common, node, sensor_client.model, opcode, app_idx);
     switch (opcode) {
     case ESP_BLE_MESH_MODEL_OP_SENSOR_CADENCE_GET:
         get.cadence_get.property_id = sensor_prop_id;
@@ -118,8 +115,7 @@ void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node,
 }
 
 static void example_ble_mesh_sensor_timeout(esp_ble_mesh_node_t *node, 
-                                          esp_ble_mesh_client_t sensor_client, uint32_t opcode,
-                                          uint16_t net_idx, uint16_t app_idx)
+                                          esp_ble_mesh_client_t sensor_client, uint32_t opcode, uint16_t app_idx)
 {
     switch (opcode) {
     case ESP_BLE_MESH_MODEL_OP_SENSOR_DESCRIPTOR_GET:
@@ -154,8 +150,7 @@ static void example_ble_mesh_sensor_timeout(esp_ble_mesh_node_t *node,
         return;
     }
 
-    example_ble_mesh_send_sensor_message(node, sensor_client, opcode,
-                                         net_idx, app_idx);
+    example_ble_mesh_send_sensor_message(node, sensor_client, opcode, app_idx);
 }
 
 void example_ble_mesh_sensor_client_cb(esp_ble_mesh_sensor_client_cb_event_t event,

@@ -20,7 +20,6 @@
 #include "esp_ble_mesh_networking_api.h"
 #include "esp_ble_mesh_config_model_api.h"
 #include "esp_ble_mesh_generic_model_api.h"
-#include "ble_mesh_fast_prov_common.h"
 #include "ble_mesh_fast_prov_operation.h"
 #include "ble_mesh_fast_prov_client_model.h"
 #include "ble_mesh_example_init.h"
@@ -33,21 +32,21 @@
 #define PROV_OWN_ADDR       0x0001
 #define APP_KEY_OCTET       0x12
 #define GROUP_ADDRESS       0xC000
-
+#define SUBCRIBED_GROUP_ADDR 0xC001
 
 static uint8_t match[] = { 0xdd, 0xdd };
 uint8_t dev_uuid[ESP_BLE_MESH_OCTET16_LEN] = {0xdd, 0xdd};
-static struct example_info_store {
-    uint16_t net_idx;   /* NetKey Index */
-    uint16_t app_idx;   /* AppKey Index */
-    uint8_t  onoff;     /* Remote OnOff */
-    uint8_t  tid;       /* Message TID */
-} __attribute__((packed)) store = {
-    .net_idx = ESP_BLE_MESH_KEY_UNUSED,
-    .app_idx = ESP_BLE_MESH_KEY_UNUSED,
-    .onoff = LED_OFF,
-    .tid = 0x0,
-};
+// static struct example_info_store {
+//     uint16_t net_idx;   /* NetKey Index */
+//     uint16_t app_idx;   /* AppKey Index */
+//     uint8_t  onoff;     /* Remote OnOff */
+//     uint8_t  tid;       /* Message TID */
+// } __attribute__((packed)) store = {
+//     .net_idx = ESP_BLE_MESH_KEY_UNUSED,
+//     .app_idx = ESP_BLE_MESH_KEY_UNUSED,
+//     .onoff = LED_OFF,
+//     .tid = 0x0,
+// };
 static const esp_ble_mesh_client_op_pair_t fast_prov_cli_op_pair[] = {
     { ESP_BLE_MESH_VND_MODEL_OP_FAST_PROV_INFO_SET,      ESP_BLE_MESH_VND_MODEL_OP_FAST_PROV_INFO_STATUS      },
     { ESP_BLE_MESH_VND_MODEL_OP_FAST_PROV_NET_KEY_ADD,   ESP_BLE_MESH_VND_MODEL_OP_FAST_PROV_NET_KEY_STATUS   },
@@ -74,6 +73,8 @@ static esp_ble_mesh_cfg_srv_t config_server = {
 };
 esp_ble_mesh_client_t config_client;
 esp_ble_mesh_client_t sensor_client;
+esp_ble_mesh_client_t power_level_client;
+esp_ble_mesh_client_t gen_onoff_client;
 esp_ble_mesh_client_t fast_prov_client = {
     .op_pair_size = ARRAY_SIZE(fast_prov_cli_op_pair),
     .op_pair = fast_prov_cli_op_pair,
@@ -91,6 +92,7 @@ static esp_ble_mesh_model_t root_models[] = {
     ESP_BLE_MESH_MODEL_CFG_CLI(&config_client),
     ESP_BLE_MESH_MODEL_SENSOR_CLI(NULL, &sensor_client),
     ESP_BLE_MESH_MODEL_GEN_POWER_LEVEL_CLI(NULL, &power_level_client),
+    ESP_BLE_MESH_MODEL_GEN_ONOFF_CLI(NULL, &gen_onoff_client),
 };
 
 static esp_ble_mesh_model_t vnd_models[] = {
@@ -119,7 +121,7 @@ static esp_ble_mesh_prov_t prov = {
     .prov_static_oob_len = 0x00,
     .flags               = 0x00,
     .iv_index            = 0x00,
-    .uuid                = dev_uuid,
+    //.uuid                = dev_uuid,
 };
 
 example_prov_info_t prov_info = {
@@ -162,15 +164,6 @@ static void provisioner_prov_complete(int node_index, const uint8_t uuid[16], ui
     //     ESP_LOGE(TAG, "%s: Failed to set node name", __func__);
     //     return;
     // }
-    name = esp_ble_mesh_provisioner_get_node_name(node_index);
-    if (name == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to get node name");
-    }
-    else
-    {
-        ESP_LOGI(TAG, "Node %d: %s", node_index ,name);
-    }
 
     /* Sets node info */
     err = example_store_node_info(uuid, unicast_addr, elem_num, prov_info.net_idx,
@@ -206,6 +199,7 @@ static void provisioner_prov_complete(int node_index, const uint8_t uuid[16], ui
         return;
     }
 }
+
 
 static void example_recv_unprov_adv_pkt(uint8_t dev_uuid[16], uint8_t addr[BLE_MESH_ADDR_LEN],
                                         esp_ble_mesh_addr_type_t addr_type, uint16_t oob_info,
@@ -310,15 +304,27 @@ static void example_provisioning_callback(esp_ble_mesh_prov_cb_event_t event,
             esp_err_t err;
             prov_info.app_idx = param->provisioner_add_app_key_comp.app_idx;
             err = esp_ble_mesh_provisioner_bind_app_key_to_local_model(PROV_OWN_ADDR, prov_info.app_idx,
-                    ESP_BLE_MESH_MODEL_ID_GEN_ONOFF_CLI, ESP_BLE_MESH_CID_NVAL);
+                    ESP_BLE_MESH_MODEL_ID_GEN_POWER_LEVEL_CLI, ESP_BLE_MESH_CID_NVAL);
             if (err != ESP_OK) {
-                ESP_LOGE(TAG, "%s: Failed to bind AppKey with OnOff Client Model", __func__);
+                ESP_LOGE(TAG, "%s: Failed to bind AppKey with Power Level Client Model", __func__);
                 return;
             }
             err = esp_ble_mesh_provisioner_bind_app_key_to_local_model(PROV_OWN_ADDR, prov_info.app_idx,
                     ESP_BLE_MESH_VND_MODEL_ID_FAST_PROV_CLI, CID_ESP);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "%s: Failed to bind AppKey with Fast Prov Client Model", __func__);
+                return;
+            }
+            err = esp_ble_mesh_provisioner_bind_app_key_to_local_model(PROV_OWN_ADDR, prov_info.app_idx,
+                    ESP_BLE_MESH_MODEL_ID_SENSOR_CLI, ESP_BLE_MESH_CID_NVAL);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "%s: Failed to bind AppKey with Sensor Client Model", __func__);
+                return;
+            }
+            err = esp_ble_mesh_provisioner_bind_app_key_to_local_model(PROV_OWN_ADDR, prov_info.app_idx,
+                    ESP_BLE_MESH_MODEL_ID_GEN_ONOFF_CLI, ESP_BLE_MESH_CID_NVAL);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "%s: Failed to bind AppKey with OnOff Client Model", __func__);
                 return;
             }
         }
@@ -541,7 +547,11 @@ esp_err_t ble_mesh_init(void)
         ESP_LOGE(TAG, "%s: Failed to add local application key", __func__);
         return ESP_FAIL;
     }
-
+    err = example_add_fast_prov_group_address(ESP_BLE_MESH_MODEL_ID_GEN_POWER_LEVEL_SRV, SUBCRIBED_GROUP_ADDR);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "%s: Failed to add group address", __func__);
+        return ESP_FAIL;
+    }
     ESP_LOGI(TAG, "BLE Mesh Provisioner initialized");
 
     return err;

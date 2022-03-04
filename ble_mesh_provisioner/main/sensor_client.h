@@ -27,8 +27,7 @@ static uint32_t send_opcode[] = {
 
 void example_ble_mesh_sensor_client_cb(esp_ble_mesh_sensor_client_cb_event_t event,
                                        esp_ble_mesh_sensor_client_cb_param_t *param);
-void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node, 
-                                          esp_ble_mesh_client_t sensor_client, uint32_t opcode,
-                                          uint16_t net_idx, uint16_t app_idx);
+// void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node, 
+//                                           esp_ble_mesh_client_t sensor_client, uint32_t opcode);
 
 #endif

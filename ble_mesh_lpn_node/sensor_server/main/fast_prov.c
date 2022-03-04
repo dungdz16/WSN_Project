@@ -407,6 +407,7 @@ static void ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event,
             };
             err = example_fast_prov_server_recv_msg(param->model_operation.model,
                                                     param->model_operation.ctx, &buf);
+            
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "%s: Failed to handle fast prov client message", __func__);
                 return;
@@ -609,7 +610,8 @@ static void ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t event,
     case ESP_BLE_MESH_CFG_SERVER_STATE_CHANGE_EVT:
         switch (param->ctx.recv_op) {
         case ESP_BLE_MESH_MODEL_OP_APP_KEY_ADD:
-            ESP_LOGI(TAG, "Config Server get Config AppKey Add");
+            ESP_LOGI(TAG, "Config Server get Config AppKey Add, Net Idx: %04x, App Idx: %04x", 
+                    param->ctx.net_idx, param->ctx.app_idx);
             err = example_handle_config_app_key_add_evt(param->value.state_change.appkey_add.app_idx);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "%s: Failed to bind app_idx 0x%04x with non-config models",
