@@ -54,11 +54,13 @@ esp_ble_mesh_node_info_t nodes[CONFIG_BLE_MESH_MAX_PROV_NODES] = {
 };
 
 esp_ble_mesh_key prov_key;
-
-
 esp_ble_mesh_client_t config_client;
 esp_ble_mesh_client_t sensor_client;
 esp_ble_mesh_client_t power_level_client;
+
+extern void example_ble_mesh_send_sensor_message(uint16_t unicast, uint32_t opcode);
+extern void example_ble_mesh_send_gen_power_level_get(uint16_t unicast);
+
 static esp_ble_mesh_cfg_srv_t config_server = {
     .relay = ESP_BLE_MESH_RELAY_DISABLED,
     .beacon = ESP_BLE_MESH_BEACON_ENABLED,
@@ -438,6 +440,14 @@ void bindAppkey(void* parameter)
             }
           }
         }
+    }
+    if (node->sensor == true)
+    {
+        example_ble_mesh_send_sensor_message(proving_node_addr, send_opcode[3]);
+    }
+    if (node->power == true)
+    {
+        example_ble_mesh_send_gen_power_level_get(proving_node_addr);
     }
     vTaskDelete(NULL);
   }

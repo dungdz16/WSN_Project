@@ -24,16 +24,20 @@
 
 static uint16_t server_address = ESP_BLE_MESH_ADDR_UNASSIGNED;
 static uint16_t sensor_prop_id;
-
+static uint8_t is_publish = false;
+LPNData sensorData;
+extern xQueueHandle queue_lpn_data;
+extern esp_ble_mesh_key prov_key;
+extern esp_ble_mesh_client_t sensor_client;
 static void example_ble_mesh_set_msg_common(esp_ble_mesh_client_common_param_t *common,
-                                            esp_ble_mesh_node_t *node,
-                                            esp_ble_mesh_model_t *model, uint32_t opcode, uint16_t app_idx)
+                                            uint16_t unicast, uint32_t opcode
+                                            )
 {
     common->opcode = opcode;
-    common->model = model;
-    common->ctx.net_idx = node->net_idx;
-    common->ctx.app_idx = app_idx;
-    common->ctx.addr = node->unicast_addr;
+    common->model = sensor_client.model;
+    common->ctx.net_idx = prov_key.net_idx;
+    common->ctx.app_idx = prov_key.app_idx;
+    common->ctx.addr = unicast;
     common->ctx.send_ttl = MSG_SEND_TTL;
     common->ctx.send_rel = MSG_SEND_REL;
     common->msg_timeout = MSG_TIMEOUT;
@@ -80,8 +84,7 @@ static void example_ble_mesh_parse_node_comp_data(const uint8_t *data, uint16_t 
 }
 
 
-void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node, 
-                                          esp_ble_mesh_client_t sensor_client, uint32_t opcode, uint16_t app_idx)
+void example_ble_mesh_send_sensor_message(uint16_t unicast, uint32_t opcode)
 {
     esp_ble_mesh_sensor_client_get_state_t get = {0};
     //esp_ble_mesh_sensor_client_set_state_t set = {0};
@@ -89,11 +92,11 @@ void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node,
     esp_err_t err = ESP_OK;
 
     //node = esp_ble_mesh_provisioner_get_node_with_addr(server_address);
-    if (node == NULL) {
-        ESP_LOGE(TAG, "Node is not exists");
-        return;
-    }
-    example_ble_mesh_set_msg_common(&common, node, sensor_client.model, opcode, app_idx);
+    // if (node == NULL) {
+    //     ESP_LOGE(TAG, "Node is not exists");
+    //     return;
+    // }
+    example_ble_mesh_set_msg_common(&common, unicast, opcode);
     switch (opcode) {
     case ESP_BLE_MESH_MODEL_OP_SENSOR_CADENCE_GET:
         get.cadence_get.property_id = sensor_prop_id;
@@ -103,21 +106,17 @@ void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_t *node,
         break;
     case ESP_BLE_MESH_MODEL_OP_SENSOR_SERIES_GET:
         get.series_get.property_id = sensor_prop_id;
-        break;
-    //case ESP_BLE_MESH_MODEL_OP_SENSOR_SETTING_SET_UNACK:
-        
+        break;     
     default:
         break;
     }
-
     err = esp_ble_mesh_sensor_client_get_state(&common, &get);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to send sensor message 0x%04x", opcode);
     }
 }
 
-static void example_ble_mesh_sensor_timeout(esp_ble_mesh_node_t *node, 
-                                          esp_ble_mesh_client_t sensor_client, uint32_t opcode, uint16_t app_idx)
+static void example_ble_mesh_sensor_timeout(uint16_t unicast, uint32_t opcode)
 {
     switch (opcode) {
     case ESP_BLE_MESH_MODEL_OP_SENSOR_DESCRIPTOR_GET:
@@ -152,7 +151,7 @@ static void example_ble_mesh_sensor_timeout(esp_ble_mesh_node_t *node,
         return;
     }
 
-    example_ble_mesh_send_sensor_message(node, sensor_client, opcode, app_idx);
+    example_ble_mesh_send_sensor_message(unicast, opcode);
 }
 
 void example_ble_mesh_sensor_client_cb(esp_ble_mesh_sensor_client_cb_event_t event,
@@ -299,6 +298,20 @@ void example_ble_mesh_sensor_client_cb(esp_ble_mesh_sensor_client_cb_event_t eve
                         fmt == ESP_BLE_MESH_SENSOR_DATA_FORMAT_A ? "A" : "B", data_len, prop_id);
                     if (data_len != ESP_BLE_MESH_SENSOR_DATA_ZERO_LEN) {
                         ESP_LOG_BUFFER_HEX("Sensor Data", data + mpid_len, data_len + 1);
+                        if (prop_id == SENSOR_PROPERTY_ID_0)
+                        {
+                            sensorData.attribute = 1;
+                            sensorData.data = (data + mpid_len)[0];
+                            sensorData.address = param->params->ctx.addr;
+                            xQueueSend(queue_lpn_data, (void*)&sensorData, 0);
+                        }
+                        if (prop_id == SENSOR_PROPERTY_ID_1)
+                        {
+                            sensorData.attribute = 2;
+                            sensorData.data = (data + mpid_len)[0];
+                            sensorData.address = param->params->ctx.addr;
+                            xQueueSend(queue_lpn_data, (void*)&sensorData, 0);
+                        }
                         length += mpid_len + data_len + 1;
                         data += mpid_len + data_len + 1;
                     } else {
@@ -307,10 +320,18 @@ void example_ble_mesh_sensor_client_cb(esp_ble_mesh_sensor_client_cb_event_t eve
                     }
                 }
             }
+            is_publish = true;
         break;
     case ESP_BLE_MESH_SENSOR_CLIENT_TIMEOUT_EVT:
+    if (is_publish == false)
+    {
         ESP_LOGI(TAG, "ESP_BLE_MESH_SENSOR_CLIENT_TIMEOUT_EVT");
-        //example_ble_mesh_sensor_timeout(param->params->opcode);
+        //example_ble_mesh_sensor_timeout(param->params->ctx.addr, param->params->opcode);
+    }
+    else
+    {
+        is_publish = false;
+    }
     default:
         break;
     }

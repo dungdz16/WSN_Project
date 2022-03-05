@@ -11,8 +11,9 @@
                 "E:/idf/components/nvs_flash/include/**",
                 "E:/idf/examples/bluetooth/esp_ble_mesh/common_components/fast_provisioning/**",
                 "E:/idf/components/bt/esp_ble_mesh/mesh_common/include/**",
-                "E:/idf/components/esp_common/include/**"
-
+                "E:/idf/components/esp_common/include/**",
+                "E:/idf/components/esp_system/include/**",
+                "E:/idf/components/freertos/include/**"
             ],
             "defines": [
                 "_DEBUG",

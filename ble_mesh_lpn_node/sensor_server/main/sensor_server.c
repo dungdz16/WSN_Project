@@ -1,5 +1,5 @@
 #include "sensor_server.h"
-
+#include "prov.h"
 struct example_sensor_descriptor {
     uint16_t sensor_prop_id;
     uint32_t pos_tolerance:12,
@@ -8,7 +8,15 @@ struct example_sensor_descriptor {
     uint8_t  measure_period;
     uint8_t  update_interval;
 } __attribute__((packed));
+esp_ble_mesh_sensor_server_cb_param_t* sensor_param;
+static esp_ble_mesh_model_t *server_model;
+static esp_ble_mesh_msg_ctx_t* contex;
+static int8_t indoor_temp = 40;
+static int8_t indoor_humidity = 50;
 
+extern esp_ble_mesh_key prov_key;
+uint16_t property_id = 0x0056;
+uint8_t op_en = false;
 static void example_ble_mesh_send_sensor_descriptor_status(esp_ble_mesh_sensor_server_cb_param_t *param)
 {
     struct example_sensor_descriptor descriptor = {0};
@@ -166,7 +174,7 @@ static uint16_t example_ble_mesh_get_sensor_data(esp_ble_mesh_sensor_state_t *st
     return (mpid_len + data_len);
 }
 
-static void example_ble_mesh_send_sensor_status(esp_ble_mesh_sensor_server_cb_param_t *param)
+void example_ble_mesh_send_sensor_status()
 {
     uint8_t *status = NULL;
     uint16_t buf_size = 0;
@@ -206,7 +214,7 @@ static void example_ble_mesh_send_sensor_status(esp_ble_mesh_sensor_server_cb_pa
         return;
     }
 
-    if (param->value.get.sensor_data.op_en == false) {
+    if (op_en == false) {
         /* Mesh Model Spec:
          * If the message is sent as a response to the Sensor Get message, and if the
          * Property ID field of the incoming message is omitted, the Marshalled Sensor
@@ -223,7 +231,7 @@ static void example_ble_mesh_send_sensor_status(esp_ble_mesh_sensor_server_cb_pa
      * device property only.
      */
     for (i = 0; i < ARRAY_SIZE(sensor_states); i++) {
-        if (param->value.get.sensor_data.property_id == sensor_states[i].sensor_property_id) {
+        if (property_id == sensor_states[i].sensor_property_id) {
             length = example_ble_mesh_get_sensor_data(&sensor_states[i], status);
             goto send;
         }
@@ -235,14 +243,19 @@ static void example_ble_mesh_send_sensor_status(esp_ble_mesh_sensor_server_cb_pa
      * by the Sensor Server.
      */
     mpid = ESP_BLE_MESH_SENSOR_DATA_FORMAT_B_MPID(ESP_BLE_MESH_SENSOR_DATA_ZERO_LEN,
-            param->value.get.sensor_data.property_id);
+            property_id);
     memcpy(status, &mpid, ESP_BLE_MESH_SENSOR_DATA_FORMAT_B_MPID_LEN);
     length = ESP_BLE_MESH_SENSOR_DATA_FORMAT_B_MPID_LEN;
 
 send:
     ESP_LOG_BUFFER_HEX("Sensor Data", status, length);
-
-    err = esp_ble_mesh_server_model_send_msg(param->model, &param->ctx,
+    contex->addr = 0x0001;
+    contex->net_idx = 0;
+    contex->app_idx = 0;
+    contex->send_rel = false;
+    contex->send_ttl = 3;
+    ESP_LOGI(TAG, "OK");
+    err = esp_ble_mesh_server_model_send_msg(server_model, contex,
             ESP_BLE_MESH_MODEL_OP_SENSOR_STATUS, length, status);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to send Sensor Status");
@@ -315,7 +328,13 @@ void ble_mesh_sensor_server_cb(esp_ble_mesh_sensor_server_cb_event_t event,
             break;
         case ESP_BLE_MESH_MODEL_OP_SENSOR_GET:
             ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_SENSOR_GET");
-            example_ble_mesh_send_sensor_status(param);
+            server_model = param->model;
+            contex = &(param->ctx);
+            op_en = param->value.get.sensor_data.op_en;
+            net_buf_simple_add_u8(&sensor_data_0, indoor_temp);
+            net_buf_simple_add_u8(&sensor_data_1, indoor_humidity);
+            example_ble_mesh_send_sensor_status();
+            
             break;
         case ESP_BLE_MESH_MODEL_OP_SENSOR_COLUMN_GET:
             ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_SENSOR_COLUMN_GET");

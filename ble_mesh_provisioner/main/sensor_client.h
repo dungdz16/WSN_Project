@@ -17,6 +17,9 @@
 
 #include "ble_mesh_example_init.h"
 
+#define SENSOR_PROPERTY_ID_0 0x0056 /* Present Ambient Temperature */
+#define SENSOR_PROPERTY_ID_1 0x005B /* Present Ambient Humidity */
+
 static uint32_t send_opcode[] = {
     [0] = ESP_BLE_MESH_MODEL_OP_SENSOR_DESCRIPTOR_GET,
     [1] = ESP_BLE_MESH_MODEL_OP_SENSOR_CADENCE_GET,

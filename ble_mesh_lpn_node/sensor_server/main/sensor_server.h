@@ -17,9 +17,7 @@
 #define CID_ESP 0x02E5
 
 #define SENSOR_PROPERTY_ID_0 0x0056 /* Present Ambient Temperature */
-//#define SENSOR_PROPERTY_ID_1 0x005B /* Present Ambient Temperature */
-
-static int8_t indoor_temp = 40;
+#define SENSOR_PROPERTY_ID_1 0x005B /* Present Ambient Humidity */
 
 #define SENSOR_POSITIVE_TOLERANCE   ESP_BLE_MESH_SENSOR_UNSPECIFIED_POS_TOLERANCE
 #define SENSOR_NEGATIVE_TOLERANCE   ESP_BLE_MESH_SENSOR_UNSPECIFIED_NEG_TOLERANCE
@@ -27,10 +25,10 @@ static int8_t indoor_temp = 40;
 #define SENSOR_MEASURE_PERIOD       ESP_BLE_MESH_SENSOR_NOT_APPL_MEASURE_PERIOD
 #define SENSOR_UPDATE_INTERVAL      ESP_BLE_MESH_SENSOR_NOT_APPL_UPDATE_INTERVAL
 
-NET_BUF_SIMPLE_DEFINE_STATIC(sensor_data, 1);
-//NET_BUF_SIMPLE_DEFINE_STATIC(sensor_data_1, 1);
+NET_BUF_SIMPLE_DEFINE_STATIC(sensor_data_0, 1);
+NET_BUF_SIMPLE_DEFINE_STATIC(sensor_data_1, 1);
 
-static esp_ble_mesh_sensor_state_t sensor_states[1] = {
+static esp_ble_mesh_sensor_state_t sensor_states[2] = {
     [0] = {
         .sensor_property_id = SENSOR_PROPERTY_ID_0,
         .descriptor.positive_tolerance = SENSOR_POSITIVE_TOLERANCE,
@@ -40,7 +38,18 @@ static esp_ble_mesh_sensor_state_t sensor_states[1] = {
         .descriptor.update_interval = SENSOR_UPDATE_INTERVAL,
         .sensor_data.format = ESP_BLE_MESH_SENSOR_DATA_FORMAT_A,
         .sensor_data.length = 0, /* 0 represents the length is 1 */
-        .sensor_data.raw_value = &sensor_data,
+        .sensor_data.raw_value = &sensor_data_0,
+    },
+    [1] = {
+        .sensor_property_id = SENSOR_PROPERTY_ID_1,
+        .descriptor.positive_tolerance = SENSOR_POSITIVE_TOLERANCE,
+        .descriptor.negative_tolerance = SENSOR_NEGATIVE_TOLERANCE,
+        .descriptor.sampling_function = SENSOR_SAMPLE_FUNCTION,
+        .descriptor.measure_period = SENSOR_MEASURE_PERIOD,
+        .descriptor.update_interval = SENSOR_UPDATE_INTERVAL,
+        .sensor_data.format = ESP_BLE_MESH_SENSOR_DATA_FORMAT_A,
+        .sensor_data.length = 0, /* 0 represents the length is 1 */
+        .sensor_data.raw_value = &sensor_data_1,
     },
 };
 

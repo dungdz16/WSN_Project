@@ -31,11 +31,9 @@ char recv_buf[512];
 uint32_t voltage;
 
 extern uint8_t dev_uuid[16];
-extern esp_ble_mesh_client_t power_level_client;
-extern esp_ble_mesh_client_t sensor_client;
 extern esp_ble_mesh_node_info_t nodes[CONFIG_BLE_MESH_MAX_PROV_NODES];
-extern void example_ble_mesh_send_gen_power_level_get(esp_ble_mesh_node_info_t node, esp_ble_mesh_client_t power_level_client);
-extern void example_ble_mesh_send_gen_power_level_set(esp_ble_mesh_node_info_t node, esp_ble_mesh_client_t power_level_client);
+extern void example_ble_mesh_send_gen_power_level_get(uint16_t unicast);
+extern void example_ble_mesh_send_gen_power_level_set(uint16_t unicast);
 // extern void example_ble_mesh_send_sensor_message(esp_ble_mesh_node_info_t *node, 
 //                                                 esp_ble_mesh_client_t sensor_client, uint32_t opcode);
 
@@ -175,7 +173,7 @@ void app_main(void)
     }
     else 
     {
-        xTimerStart(getPwrLvlTimer, 0);
+        //xTimerStart(getPwrLvlTimer, 0);
     }
     queue_lpn_data = xQueueCreate(10, sizeof(generalNode));
     while(1)
@@ -206,7 +204,7 @@ void getPwrLvlCallback(TimerHandle_t xTimer)
         if (nodes[index].power == true)
         {
             ESP_LOGI(TAG, "SEND GET POWER");
-            example_ble_mesh_send_gen_power_level_set(nodes[index], power_level_client);
+            example_ble_mesh_send_gen_power_level_set(nodes[index].unicast);
         }
     }
 }

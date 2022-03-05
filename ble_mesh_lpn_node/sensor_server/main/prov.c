@@ -15,11 +15,11 @@
 #include "ble_mesh_example_init.h"
 #include "sensor_server.h"
 #include "power.h"
-
+#include "prov.h"
 #define CID_ESP 0x02E5
 
 uint8_t dev_uuid[16] = { 0xdd, 0xdd };
-
+esp_ble_mesh_key prov_key;
 static esp_ble_mesh_cfg_srv_t config_server = {
     .relay = ESP_BLE_MESH_RELAY_DISABLED,
     .beacon = ESP_BLE_MESH_BEACON_ENABLED,
@@ -123,10 +123,14 @@ static void example_ble_mesh_config_server_cb(esp_ble_mesh_cfg_server_cb_event_t
             ESP_LOGI(TAG, "net_idx 0x%04x, app_idx 0x%04x",
                 param->value.state_change.appkey_add.net_idx,
                 param->value.state_change.appkey_add.app_idx);
+            prov_key.net_idx = param->value.state_change.netkey_add.net_idx;
+            prov_key.app_idx = param->value.state_change.appkey_add.app_idx;
             ESP_LOG_BUFFER_HEX("AppKey", param->value.state_change.appkey_add.app_key, 16);
 
             break;
         case ESP_BLE_MESH_MODEL_OP_MODEL_APP_BIND:
+            //contex = &(param->ctx);
+            //server_model = param->model;
             ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_MODEL_APP_BIND");
             ESP_LOGI(TAG, "elem_addr 0x%04x, app_idx 0x%04x, cid 0x%04x, mod_id 0x%04x",
                 param->value.state_change.mod_app_bind.element_addr,

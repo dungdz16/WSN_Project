@@ -2,9 +2,11 @@
 #include "prov.h"
 #define TAG "POWER_CLIENT"
 extern esp_ble_mesh_key prov_key;
-extern xQueueHandle queue_lpn_data;;
+extern xQueueHandle queue_lpn_data;
+extern esp_ble_mesh_client_t power_level_client;
 LPNData powerData;
-void example_ble_mesh_send_gen_power_level_get(esp_ble_mesh_node_info_t node, esp_ble_mesh_client_t power_level_client)
+uint8_t is_publish = false;
+void example_ble_mesh_send_gen_power_level_get(uint16_t unicast)
 {
     esp_ble_mesh_generic_client_get_state_t get = {0};
     esp_ble_mesh_client_common_param_t common = {0};
@@ -12,7 +14,7 @@ void example_ble_mesh_send_gen_power_level_get(esp_ble_mesh_node_info_t node, es
     common.model = power_level_client.model;
     common.ctx.net_idx = prov_key.net_idx;
     common.ctx.app_idx = prov_key.app_idx;
-    common.ctx.addr = node.unicast;
+    common.ctx.addr = unicast;
     common.ctx.send_ttl = 3;
     common.ctx.send_rel = false;
     common.msg_timeout = 0;
@@ -24,7 +26,7 @@ void example_ble_mesh_send_gen_power_level_get(esp_ble_mesh_node_info_t node, es
     }
 }
 
-void example_ble_mesh_send_gen_power_level_set(esp_ble_mesh_node_info_t node, esp_ble_mesh_client_t power_level_client)
+void example_ble_mesh_send_gen_power_level_set(uint16_t unicast)
 {
     esp_ble_mesh_generic_client_set_state_t set = {0};
     esp_ble_mesh_client_common_param_t common = {0};
@@ -32,7 +34,7 @@ void example_ble_mesh_send_gen_power_level_set(esp_ble_mesh_node_info_t node, es
     common.model = power_level_client.model;
     common.ctx.net_idx = prov_key.net_idx;
     common.ctx.app_idx = prov_key.app_idx;
-    common.ctx.addr = node.unicast;
+    common.ctx.addr = unicast;
     common.ctx.send_ttl = 3;
     common.ctx.send_rel = false;
     common.msg_timeout = 0;
@@ -105,6 +107,7 @@ void example_ble_mesh_generic_client_cb(esp_ble_mesh_generic_client_cb_event_t e
         break;
     case ESP_BLE_MESH_GENERIC_CLIENT_PUBLISH_EVT:
         ESP_LOGI(TAG, "ESP_BLE_MESH_GENERIC_CLIENT_PUBLISH_EVT");
+        is_publish = true;
         switch (param->params->opcode ) {
             case (ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_SET):
                 ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_SET, POWER LEVEL %d", param->status_cb.power_level_status.present_power);
@@ -120,14 +123,18 @@ void example_ble_mesh_generic_client_cb(esp_ble_mesh_generic_client_cb_event_t e
                 powerData.address = address;
                 xQueueSend(queue_lpn_data, (void*)&powerData, 0);
                 break;
+            
         }
     case ESP_BLE_MESH_GENERIC_CLIENT_TIMEOUT_EVT:
-        // if (param->params->opcode == ESP_BLE_MESH_MODEL_OP_GEN_POWER_LEVEL_GET)
-        // {
-        //     ESP_LOGI(TAG, "ESP_BLE_MESH_GENERIC_CLIENT_TIME_OUT_EVT");
-        //     //example_ble_mesh_send_gen_power_level_get(param->params->model.);
-        // }
+    if (is_publish == true)
+    {
+        is_publish = false;
+    }
+    else
+    {
         ESP_LOGI(TAG, "ESP_BLE_MESH_GENERIC_CLIENT_TIMEOUT_EVT");
+        //example_ble_mesh_send_gen_power_level_get(address);
+    }
 
         break;
     default:
