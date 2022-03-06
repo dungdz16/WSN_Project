@@ -1,13 +1,13 @@
 # Target labels
  bootloader
 # Source files and their labels
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/CMakeFiles/bootloader
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/CMakeFiles/bootloader.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/CMakeFiles/bootloader-complete.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
-E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/CMakeFiles/bootloader
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/CMakeFiles/bootloader.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/CMakeFiles/bootloader-complete.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule

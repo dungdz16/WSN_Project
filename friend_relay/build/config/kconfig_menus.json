@@ -5979,10 +5979,7 @@
                                 "help": "This option specifies how many unprovisioned devices can be added to device\nqueue for provisioning. Users can use this option to define the size of the\nqueue in the bottom layer which is used to store unprovisioned device\ninformation (e.g. Device UUID, address).",
                                 "id": "BLE_MESH_WAIT_FOR_PROV_MAX_DEV_NUM",
                                 "name": "BLE_MESH_WAIT_FOR_PROV_MAX_DEV_NUM",
-                                "range": [
-                                    1,
-                                    100
-                                ],
+                                "range": null,
                                 "title": "Maximum number of unprovisioned devices that can be added to device queue",
                                 "type": "int"
                             },
@@ -5992,10 +5989,7 @@
                                 "help": "This option specifies how many devices can be provisioned by a Provisioner.\nThis value indicates the maximum number of unprovisioned devices which can be\nprovisioned by a Provisioner. For instance, if the value is 6, it means the\nProvisioner can provision up to 6 unprovisioned devices.\nTheoretically a Provisioner without the limitation of its memory can provision\nup to 32766 unprovisioned devices, here we limit the maximum number to 100\njust to limit the memory used by a Provisioner. The bigger the value is, the\nmore memory it will cost by a Provisioner to store the information of nodes.",
                                 "id": "BLE_MESH_MAX_PROV_NODES",
                                 "name": "BLE_MESH_MAX_PROV_NODES",
-                                "range": [
-                                    1,
-                                    1000
-                                ],
+                                "range": null,
                                 "title": "Maximum number of devices that can be provisioned by Provisioner",
                                 "type": "int"
                             },
@@ -6005,10 +5999,7 @@
                                 "help": "This option specifies how many devices can be provisioned at the same time\nusing PB-ADV. For examples, if the value is 2, it means a Provisioner can\nprovision two unprovisioned devices with PB-ADV at the same time.",
                                 "id": "BLE_MESH_PBA_SAME_TIME",
                                 "name": "BLE_MESH_PBA_SAME_TIME",
-                                "range": [
-                                    1,
-                                    10
-                                ],
+                                "range": null,
                                 "title": "Maximum number of PB-ADV running at the same time by Provisioner",
                                 "type": "int"
                             },
@@ -6018,10 +6009,7 @@
                                 "help": "This option specifies how many devices can be provisioned at the same\ntime using PB-GATT. For example, if the value is 2, it means a Provisioner\ncan provision two unprovisioned devices with PB-GATT at the same time.",
                                 "id": "BLE_MESH_PBG_SAME_TIME",
                                 "name": "BLE_MESH_PBG_SAME_TIME",
-                                "range": [
-                                    1,
-                                    5
-                                ],
+                                "range": null,
                                 "title": "Maximum number of PB-GATT running at the same time by Provisioner",
                                 "type": "int"
                             },
@@ -6031,10 +6019,7 @@
                                 "help": "This option specifies how many subnets per network a Provisioner can create.\nIndeed, this value decides the number of network keys which can be added by a Provisioner.",
                                 "id": "BLE_MESH_PROVISIONER_SUBNET_COUNT",
                                 "name": "BLE_MESH_PROVISIONER_SUBNET_COUNT",
-                                "range": [
-                                    1,
-                                    4096
-                                ],
+                                "range": null,
                                 "title": "Maximum number of mesh subnets that can be created by Provisioner",
                                 "type": "int"
                             },
@@ -6044,10 +6029,7 @@
                                 "help": "This option specifies how many application keys the Provisioner can have.\nIndeed, this value decides the number of the application keys which can be added by a Provisioner.",
                                 "id": "BLE_MESH_PROVISIONER_APP_KEY_COUNT",
                                 "name": "BLE_MESH_PROVISIONER_APP_KEY_COUNT",
-                                "range": [
-                                    1,
-                                    4096
-                                ],
+                                "range": null,
                                 "title": "Maximum number of application keys that can be owned by Provisioner",
                                 "type": "int"
                             },
@@ -6396,7 +6378,7 @@
                         "name": "BLE_MESH_TX_SEG_MSG_COUNT",
                         "range": [
                             1,
-                            200
+                            60
                         ],
                         "title": "Maximum number of simultaneous outgoing segmented messages",
                         "type": "int"
@@ -6450,10 +6432,7 @@
                                         "help": "Number of advertising buffers for relay packets available.",
                                         "id": "BLE_MESH_RELAY_ADV_BUF_COUNT",
                                         "name": "BLE_MESH_RELAY_ADV_BUF_COUNT",
-                                        "range": [
-                                            6,
-                                            256
-                                        ],
+                                        "range": null,
                                         "title": "Number of advertising buffers for relay packets",
                                         "type": "int"
                                     }
@@ -6615,7 +6594,10 @@
                                 "help": "Receive Window in milliseconds supported by the Friend node.",
                                 "id": "BLE_MESH_FRIEND_RECV_WIN",
                                 "name": "BLE_MESH_FRIEND_RECV_WIN",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    255
+                                ],
                                 "title": "Friend Receive Window",
                                 "type": "int"
                             },
@@ -6625,7 +6607,10 @@
                                 "help": "Minimum number of buffers available to be stored for each local Friend Queue.\nThis option decides the size of each buffer which can be used by a Friend node\nto store messages for each Low Power node.",
                                 "id": "BLE_MESH_FRIEND_QUEUE_SIZE",
                                 "name": "BLE_MESH_FRIEND_QUEUE_SIZE",
-                                "range": null,
+                                "range": [
+                                    2,
+                                    65536
+                                ],
                                 "title": "Minimum number of buffers supported per Friend Queue",
                                 "type": "int"
                             },
@@ -6635,7 +6620,10 @@
                                 "help": "Size of the Subscription List that can be supported by a Friend node for a\nLow Power node. And Low Power node can send Friend Subscription List Add or\nFriend Subscription List Remove messages to the Friend node to add or remove\nsubscription addresses.",
                                 "id": "BLE_MESH_FRIEND_SUB_LIST_SIZE",
                                 "name": "BLE_MESH_FRIEND_SUB_LIST_SIZE",
-                                "range": null,
+                                "range": [
+                                    0,
+                                    1023
+                                ],
                                 "title": "Friend Subscription List Size",
                                 "type": "int"
                             },
@@ -6645,7 +6633,10 @@
                                 "help": "Number of Low Power Nodes with which a Friend can have Friendship simultaneously.\nA Friend node can have friendship with multiple Low Power nodes at the same time,\nwhile a Low Power node can only establish friendship with only one Friend node at\nthe same time.",
                                 "id": "BLE_MESH_FRIEND_LPN_COUNT",
                                 "name": "BLE_MESH_FRIEND_LPN_COUNT",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    1000
+                                ],
                                 "title": "Number of supported LPN nodes",
                                 "type": "int"
                             },
@@ -6655,7 +6646,10 @@
                                 "help": "Number of incomplete segment lists tracked for each Friends' LPN.\nIn other words, this determines from how many elements can segmented\nmessages destined for the Friend queue be received simultaneously.",
                                 "id": "BLE_MESH_FRIEND_SEG_RX",
                                 "name": "BLE_MESH_FRIEND_SEG_RX",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    1000
+                                ],
                                 "title": "Number of incomplete segment lists per LPN",
                                 "type": "int"
                             }
@@ -15777,6 +15771,57 @@
                 "depends_on": null,
                 "id": "component-config-supplicant",
                 "title": "Supplicant",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice BUTTON_TIMER_IMPLEMENT>",
+                                "help": null,
+                                "id": "BUTTON_USE_RTOS_TIMER",
+                                "name": "BUTTON_USE_RTOS_TIMER",
+                                "range": null,
+                                "title": "Use FreeRTOS Timer",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice BUTTON_TIMER_IMPLEMENT>",
+                                "help": null,
+                                "id": "BUTTON_USE_ESP_TIMER",
+                                "name": "BUTTON_USE_ESP_TIMER",
+                                "range": null,
+                                "title": "Use ESP Timer",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Choose a implementation of timer for button instance.",
+                        "id": "component-config-button-button-timer-mode",
+                        "name": "BUTTON_TIMER_IMPLEMENT",
+                        "title": "Button Timer Mode",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "BUTTON_IO_GLITCH_FILTER_TIME_MS",
+                        "name": "BUTTON_IO_GLITCH_FILTER_TIME_MS",
+                        "range": [
+                            10,
+                            100
+                        ],
+                        "title": "IO glitch filter timer ms (10~100)",
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-button",
+                "title": "Button",
                 "type": "menu"
             }
         ],

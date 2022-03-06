@@ -1,22 +1,19 @@
-// Copyright 2017-2019 Espressif Systems (Shanghai) PTE LTD
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+/* board.c - Board-specific hooks */
 
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2017 Intel Corporation
+ * Additional Copyright (c) 2018 Espressif Systems (Shanghai) PTE LTD
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 #include <stdio.h>
 
 #include "driver/gpio.h"
+#include "esp_log.h"
+
+#include "iot_button.h"
 #include "board.h"
-#include "ble_mesh_fast_prov_common.h"
 
 #define TAG "BOARD"
 
@@ -25,17 +22,8 @@ struct _led_state led_state[3] = {
     { LED_OFF, LED_OFF, LED_G, "green" },
     { LED_OFF, LED_OFF, LED_B, "blue"  },
 };
-
-void board_output_number(esp_ble_mesh_output_action_t action, uint32_t number)
-{
-    ESP_LOGI(TAG, "Board output number %d", number);
-}
-
-void board_prov_complete(void)
-{
-    board_led_operation(LED_B, LED_OFF);
-}
-
+#define BUTTON_IO_NUM           0
+#define BUTTON_ACTIVE_LEVEL     0
 void board_led_operation(uint8_t pin, uint8_t onoff)
 {
     for (int i = 0; i < 3; i++) {
@@ -55,6 +43,20 @@ void board_led_operation(uint8_t pin, uint8_t onoff)
     ESP_LOGE(TAG, "LED is not found!");
 }
 
+static void button_tap_cb(void* arg)
+{
+    ESP_LOGI(TAG, "tap cb (%s)", (char *)arg);
+    printf("Entering deep sleep\n");
+    esp_deep_sleep_start();
+}
+
+static void board_button_init(void)
+{
+    button_handle_t btn_handle = iot_button_create(BUTTON_IO_NUM, BUTTON_ACTIVE_LEVEL);
+    if (btn_handle) {
+        iot_button_set_evt_cb(btn_handle, BUTTON_CB_RELEASE, button_tap_cb, "RELEASE");
+    }
+}
 static void board_led_init(void)
 {
     for (int i = 0; i < 3; i++) {
@@ -65,8 +67,8 @@ static void board_led_init(void)
     }
 }
 
-esp_err_t board_init(void)
+void board_init(void)
 {
     board_led_init();
-    return ESP_OK;
+    board_button_init();
 }

@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader/esp-idf/cmake_install.cmake")
+  include("E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader/esp-idf/cmake_install.cmake")
 
 endif()
 
@@ -46,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

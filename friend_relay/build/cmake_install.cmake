@@ -1,8 +1,8 @@
-# Install script for directory: E:/Downloads/20211/WSN/WSN_Project/friend_relay
+# Install script for directory: E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/fast_prov_server")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/onoff_server")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/esp-idf/cmake_install.cmake")
+  include("E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/esp-idf/cmake_install.cmake")
 
 endif()
 
@@ -46,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

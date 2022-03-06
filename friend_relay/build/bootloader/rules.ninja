@@ -194,7 +194,7 @@ rule C_STATIC_LIBRARY_LINKER____idf_main
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\Users\Admin\.espressif\tools\cmake\3.16.4\bin\cmake.exe -SE:\idf\components\bootloader\subproject -BE:\Downloads\20211\WSN\WSN_Project\friend_relay\build\bootloader
+  command = C:\Users\Admin\.espressif\tools\cmake\3.16.4\bin\cmake.exe -SE:\idf\components\bootloader\subproject -BE:\idf\examples\bluetooth\esp_ble_mesh\ble_mesh_node\server\build\bootloader
   description = Re-running CMake...
   generator = 1
 

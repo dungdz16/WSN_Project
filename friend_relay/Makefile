@@ -3,9 +3,8 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := fast_prov_server
+PROJECT_NAME := onoff_server
 
 EXTRA_COMPONENT_DIRS := $(IDF_PATH)/examples/bluetooth/esp_ble_mesh/common_components/example_init \
-                        $(IDF_PATH)/examples/bluetooth/esp_ble_mesh/common_components/fast_provisioning
-
+												$(IDF_PATH)/examples/bluetooth/esp_ble_mesh/common_components/button
 include $(IDF_PATH)/make/project.mk

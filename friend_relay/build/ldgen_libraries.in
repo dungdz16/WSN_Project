@@ -66,4 +66,4 @@ $<TARGET_FILE:__idf_unity>
 $<TARGET_FILE:__idf_wifi_provisioning>
 $<TARGET_FILE:__idf_main>
 $<TARGET_FILE:__idf_example_init>
-$<TARGET_FILE:__idf_fast_provisioning>
+$<TARGET_FILE:__idf_button>

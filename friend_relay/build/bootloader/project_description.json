@@ -1,8 +1,8 @@
 {
     "project_name":       "bootloader",
     "project_path":       "E:/idf/components/bootloader/subproject",
-    "build_dir":          "E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/bootloader",
-    "config_file":        "E:/Downloads/20211/WSN/WSN_Project/friend_relay/sdkconfig",
+    "build_dir":          "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/bootloader",
+    "config_file":        "E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/sdkconfig",
     "config_defaults":    "",
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",

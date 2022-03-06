@@ -1,8 +1,8 @@
-# Install script for directory: E:/Downloads/20211/WSN/WSN_Project/friend_relay/main
+# Install script for directory: E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/fast_prov_server")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/onoff_server")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

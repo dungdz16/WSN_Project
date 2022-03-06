@@ -25,9 +25,6 @@ LPNData generalNode = {
     .data = 0,
     .address = 0,
 };
-char REQUEST[512];
-char SUBREQUEST[100];
-char recv_buf[512];
 uint32_t voltage;
 
 extern uint8_t dev_uuid[16];
@@ -49,10 +46,14 @@ static void http_get_task(void *pvParameters)
     struct addrinfo *res;
     struct in_addr *addr;
     int s, r;
-    char recv_buf[64];
+    //char recv_buf[64];
 
     while(1) {
 // connect
+        char REQUEST[512];
+        char SUBREQUEST[100];
+        char recv_buf[512];
+        char* api_key;
         int err = getaddrinfo(WEB_SERVER, WEB_PORT, &hints, &res);
 
         if(err != 0 || res == NULL) {
@@ -90,7 +91,29 @@ static void http_get_task(void *pvParameters)
         if (xQueueReceive(queue_lpn_data, &generalNode, 100) == pdTRUE)
         {
         // create REQUEST string
-            sprintf(SUBREQUEST, "api_key=3HX6JGXXI589JEZI&field%d=%d", generalNode.address - 6, generalNode.data);    
+            if (generalNode.address == 0x06)
+            {
+                api_key = "3HX6JGXXI589JEZI";
+            }
+            else
+            {
+                api_key = "LQ3HFI3RK3E6LZ6I";
+            }
+            ESP_LOGI(TAG, "Queue: attribute: %d, data: %d, address: %d", generalNode.attribute, generalNode.data, generalNode.address);
+            if (generalNode.attribute == POWER)
+            {
+                float value = (float)generalNode.data / 65536 * 100;
+                sprintf(SUBREQUEST, "api_key=%s&field3=%d", api_key, (int)value);    
+            }
+            if (generalNode.attribute == 1)
+            {
+                sprintf(SUBREQUEST, "api_key=%s&field1=%d", api_key, generalNode.data);
+
+            }
+            if (generalNode.attribute == 2)
+            {
+                sprintf(SUBREQUEST, "api_key=%s&field2=%d", api_key, generalNode.data);
+            }
             sprintf(REQUEST, "POST /update.json HTTP/1.1\nHost: api.thingspeak.com\nConnection: close\nContent-Type: application/x-www-form-urlencoded\nContent-Length:%d\n\n%s\n",strlen(SUBREQUEST),SUBREQUEST);
             
         //sprintf(REQUEST, "https://api.thingspeak.com/update?api_key=A7B92CTA3AXZZ12E&field1=5 ");
@@ -124,16 +147,17 @@ static void http_get_task(void *pvParameters)
                     putchar(recv_buf[i]);
                 }
             } while(r > 0);
+            ESP_LOGI(TAG, "... done reading from socket. Last read return=%d errno=%d.", r, errno);
 
     // delay 10s
-            ESP_LOGI(TAG, "... done reading from socket. Last read return=%d errno=%d.", r, errno);
+        }
+        
             close(s);
-            for(int countdown = 10; countdown >= 0; countdown--) {
-                ESP_LOGI(TAG, "%d... ", countdown);
+            for(int countdown = 15; countdown >= 0; countdown--) {
+                //ESP_LOGI(TAG, "%d... ", countdown);
                 vTaskDelay(1000 / portTICK_PERIOD_MS);
             }
             ESP_LOGI(TAG, "Starting again!");
-        }
     }
 }
 
@@ -175,25 +199,18 @@ void app_main(void)
     {
         //xTimerStart(getPwrLvlTimer, 0);
     }
-    queue_lpn_data = xQueueCreate(10, sizeof(generalNode));
-    while(1)
-    {
-        if (xQueueReceive(queue_lpn_data, &generalNode, portMAX_DELAY) == pdTRUE)
-        {
-            ESP_LOGI(TAG, "Queue: attribute: %d, data: %d, address: %d", generalNode.attribute, generalNode.data, generalNode.address);
-        }
-    }
-    // ESP_ERROR_CHECK( nvs_flash_init() );
-    // ESP_ERROR_CHECK(esp_netif_init());
-    // ESP_ERROR_CHECK(esp_event_loop_create_default());
+    queue_lpn_data = xQueueCreate(20, sizeof(generalNode));
+    ESP_ERROR_CHECK( nvs_flash_init() );
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
      * Read "Establishing Wi-Fi or Ethernet Connection" section in
      * examples/protocols/README.md for more information about this function.
      */
-    //ESP_ERROR_CHECK(example_connect());
-    //wifi_console_init();
-    //xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 5, NULL);
+    ESP_ERROR_CHECK(example_connect());
+    // wifi_console_init();
+    xTaskCreate(&http_get_task, "http_get_task", 4096, NULL, 5, NULL);
     
 }
 

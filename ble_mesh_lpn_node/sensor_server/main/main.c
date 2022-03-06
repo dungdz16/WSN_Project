@@ -11,18 +11,19 @@
 
 static esp_adc_cal_characteristics_t *adc_chars;
 #if CONFIG_IDF_TARGET_ESP32
-static const adc_channel_t channel = ADC_CHANNEL_4;     //GPIO34 if ADC1, GPIO14 if ADC2
+static const adc_channel_t channel = ADC_CHANNEL_0;     //GPIO34 if ADC1, GPIO14 if ADC2
 static const adc_bits_width_t width = ADC_WIDTH_BIT_12;
 #elif CONFIG_IDF_TARGET_ESP32S2
 static const adc_channel_t channel = ADC_CHANNEL_6;     // GPIO7 if ADC1, GPIO17 if ADC2
 static const adc_bits_width_t width = ADC_WIDTH_BIT_13;
 #endif
+//static const dht_sensor_type_t sensor_type = DHT_TYPE_DHT11;
 static const adc_atten_t atten = ADC_ATTEN_DB_11;
-static const adc_unit_t unit = ADC_UNIT_1;
+static const adc_unit_t unit = ADC_UNIT_2;
 
 extern uint8_t dev_uuid[16];
 extern void handle_gen_power_level_msg(uint32_t voltage);
-extern void example_ble_mesh_send_sensor_status();
+extern void example_ble_mesh_send_sensor_status(uint8_t humidity, uint8_t temperature);
 xTimerHandle sendDataTimerHandle;
 
 void handleData(void* parameter);
@@ -82,6 +83,8 @@ void handleData(void* parameter)
     while(1)
     {
         uint32_t adc_reading = 0;
+        uint8_t temperature = 23 + esp_random()/(UINT32_MAX);
+        uint8_t humidity = 87 + esp_random()/(UINT32_MAX);
         //Multisampling
         for (int i = 0; i < NO_OF_SAMPLES; i++) {
             if (unit == ADC_UNIT_1) {
@@ -94,11 +97,22 @@ void handleData(void* parameter)
         }
         adc_reading /= NO_OF_SAMPLES;
         //Convert adc_reading to voltage in mV
-        uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
-        printf("Raw: %d\tVoltage: %dmV\n", adc_reading, voltage);
-        ESP_LOGI(TAG, "Server Model Send Msg");
-        handle_gen_power_level_msg(adc_reading  );
-        example_ble_mesh_send_sensor_status();
+        float voltage = adc_reading * 3.3 / 4096;
+        printf("Raw: %d\tVoltage: %fmV\n", adc_reading, voltage);
+        // if (dht_read_data(sensor_type, dht_gpio, &humidity, &temperature) == ESP_OK)
+        // {
+            ESP_LOGI(TAG, "Humidity: %d%% Temp: %dC\n", humidity, temperature);
+            ESP_LOGI(TAG, "Server Model Send Msg");
+            example_ble_mesh_send_sensor_status(humidity, temperature);
+        //}
+        // else
+        // {
+        //     ESP_LOGE(TAG, "Could not read data from sensor");
+        // }
+        // if (adc_reading != 0)
+        // {
+            handle_gen_power_level_msg(adc_reading);
+        //}
         vTaskDelete(NULL);
     }
 }
@@ -115,9 +129,9 @@ void setupADC()
     }
 
     //Characterize ADC
-    adc_chars = calloc(1, sizeof(esp_adc_cal_characteristics_t));
-    esp_adc_cal_value_t val_type = esp_adc_cal_characterize(unit, atten, width, DEFAULT_VREF, adc_chars);
-    print_char_val_type(val_type);
+    // adc_chars = calloc(1, sizeof(esp_adc_cal_characteristics_t));
+    // esp_adc_cal_value_t val_type = esp_adc_cal_characterize(unit, atten, width, DEFAULT_VREF, adc_chars);
+    // print_char_val_type(val_type);
 }
 
 static void check_efuse(void)

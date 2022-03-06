@@ -9,8 +9,8 @@ struct example_sensor_descriptor {
     uint8_t  update_interval;
 } __attribute__((packed));
 esp_ble_mesh_sensor_server_cb_param_t* sensor_param;
-static esp_ble_mesh_model_t *server_model;
-static esp_ble_mesh_msg_ctx_t* contex;
+static esp_ble_mesh_model_t *server_model = NULL;
+static esp_ble_mesh_msg_ctx_t contex;
 static int8_t indoor_temp = 40;
 static int8_t indoor_humidity = 50;
 
@@ -174,7 +174,7 @@ static uint16_t example_ble_mesh_get_sensor_data(esp_ble_mesh_sensor_state_t *st
     return (mpid_len + data_len);
 }
 
-void example_ble_mesh_send_sensor_status()
+void example_ble_mesh_send_sensor_status(uint8_t humidity, uint8_t temperature)
 {
     uint8_t *status = NULL;
     uint16_t buf_size = 0;
@@ -182,7 +182,6 @@ void example_ble_mesh_send_sensor_status()
     uint32_t mpid = 0;
     esp_err_t err;
     int i;
-
     /**
      * Sensor Data state from Mesh Model Spec
      * |--------Field--------|-Size (octets)-|------------------------Notes-------------------------|
@@ -249,17 +248,20 @@ void example_ble_mesh_send_sensor_status()
 
 send:
     ESP_LOG_BUFFER_HEX("Sensor Data", status, length);
-    contex->addr = 0x0001;
-    contex->net_idx = 0;
-    contex->app_idx = 0;
-    contex->send_rel = false;
-    contex->send_ttl = 3;
+    contex.addr = 0x0001;
+    contex.net_idx = 0;
+    contex.app_idx = 0;
+    contex.send_rel = false;
+    contex.send_ttl = 3;
     ESP_LOGI(TAG, "OK");
-    err = esp_ble_mesh_server_model_send_msg(server_model, contex,
-            ESP_BLE_MESH_MODEL_OP_SENSOR_STATUS, length, status);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to send Sensor Status");
-    }
+    // if (contex != NULL)
+    // {
+        err = esp_ble_mesh_server_model_send_msg(server_model, &contex,
+                ESP_BLE_MESH_MODEL_OP_SENSOR_STATUS, length, status);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to send Sensor Status");
+        }
+    //}
     free(status);
 }
 
@@ -329,11 +331,11 @@ void ble_mesh_sensor_server_cb(esp_ble_mesh_sensor_server_cb_event_t event,
         case ESP_BLE_MESH_MODEL_OP_SENSOR_GET:
             ESP_LOGI(TAG, "ESP_BLE_MESH_MODEL_OP_SENSOR_GET");
             server_model = param->model;
-            contex = &(param->ctx);
+            contex = (param->ctx);
             op_en = param->value.get.sensor_data.op_en;
-            net_buf_simple_add_u8(&sensor_data_0, indoor_temp);
-            net_buf_simple_add_u8(&sensor_data_1, indoor_humidity);
-            example_ble_mesh_send_sensor_status();
+            net_buf_simple_add_u8(&sensor_data_0, 23 + esp_random() / UINT32_MAX);
+            net_buf_simple_add_u8(&sensor_data_1, 83 + esp_random() / UINT32_MAX);
+            example_ble_mesh_send_sensor_status(0, 0);
             
             break;
         case ESP_BLE_MESH_MODEL_OP_SENSOR_COLUMN_GET:

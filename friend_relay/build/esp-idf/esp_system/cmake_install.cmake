@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/fast_prov_server")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/onoff_server")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("E:/Downloads/20211/WSN/WSN_Project/friend_relay/build/esp-idf/esp_system/port/cmake_install.cmake")
+  include("E:/idf/examples/bluetooth/esp_ble_mesh/ble_mesh_node/server/build/esp-idf/esp_system/port/cmake_install.cmake")
 
 endif()
 
